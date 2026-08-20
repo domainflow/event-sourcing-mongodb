@@ -1,0 +1,48 @@
+services:
+  mongodb:
+    image: mongo:8.3
+    restart: always
+    # A single-node replica set, not a standalone: MongoDB has required a
+    # replica set for multi-document transactions since 4.0 and still does, so
+    # a standalone silently confines MongoDbEventStorage to its non-atomic
+    # fallback path. `w: majority` is equally meaningless without one.
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    environment:
+      MONGO_INITDB_DATABASE: event_sourcing_test
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: >
+        mongosh --quiet --eval "try { rs.status().ok } catch (e) {
+          rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]}).ok
+        }"
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
+
+  # The other supported deployment: no replica set, so MongoDbEventStorage
+  # takes its compensating fallback path. `composer test-standalone` points at
+  # this one to prove that mode still works end to end.
+  mongodb-standalone:
+    image: mongo:8.3
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: event_sourcing_test
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-standalone-data:/data/db
+    healthcheck:
+      test: >
+        mongosh --quiet --eval "db.runCommand({ping: 1}).ok"
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  mongo-data:
+  mongo-standalone-data:
