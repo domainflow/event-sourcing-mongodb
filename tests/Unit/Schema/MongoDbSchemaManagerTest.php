@@ -41,7 +41,10 @@ final class MongoDbSchemaManagerTest extends AbstractSchemaManagerTestCase
 
     protected function writeAnEvent(): void
     {
-        (new MongoDbEventStorage($this->getMongoDatabase()))
+        (new MongoDbEventStorage(
+            $this->getMongoDatabase(),
+            allowNonAtomicBatches: $this->allowNonAtomicBatches()
+        ))
             ->storeEvents([new AnotherDummyEvent(EntityIdentifier::fromString('schema-probe'), 1)]);
     }
 
