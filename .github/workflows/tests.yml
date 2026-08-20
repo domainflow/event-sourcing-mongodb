@@ -29,8 +29,6 @@ jobs:
           coverage: xdebug
 
       - name: Install Composer dependencies
-        env:
-          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.COMPOSER_TOKEN }}"}}'
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Save vendor folder
