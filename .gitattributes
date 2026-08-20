@@ -1,0 +1,22 @@
+# What a consumer receives from `composer require`.
+#
+# Everything below is part of developing this package and no part of using it,
+# so it stays out of the dist archive. Verify with:
+#
+#     git archive --format=tar HEAD | tar -t
+#
+# This package has no `provider/` of its own — it consumes Core's, which Core
+# deliberately ships for exactly that reason. If one is ever added here, do
+# not export-ignore it.
+/tests              export-ignore
+/tools              export-ignore
+/.github            export-ignore
+/build              export-ignore
+/phpunit.xml        export-ignore
+/phpstan.neon       export-ignore
+/php_cs.dist.php    export-ignore
+/phptoolsconfig.json export-ignore
+/docker-compose.yml export-ignore
+/Dockerfile         export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore

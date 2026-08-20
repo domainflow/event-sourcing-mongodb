@@ -1,0 +1,93 @@
+{
+  "name": "domainflow/event-sourcing-mongodb",
+  "description": "MongoDB adapter package for domainflow/event-sourcing-core",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "DomainFlow",
+      "homepage": "https://www.domainflow.dev"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/domainflow/event-sourcing-mongodb/issues",
+    "source": "https://github.com/domainflow/event-sourcing-mongodb"
+  },
+  "require": {
+    "php": "^8.4",
+    "ext-mongodb": "*",
+    "mongodb/mongodb": "^2.0",
+    "domainflow/event-sourcing-core": "^v0.1.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.70",
+    "mikey179/vfsstream": "^1.6",
+    "nikic/php-parser": "^5.4",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpunit/phpunit": "^12.5",
+    "symfony/phpunit-bridge": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "DomainFlow\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DomainFlow\\EventSourcingMongoDB\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": [
+      "@putenv XDEBUG_MODE=coverage",
+      "./vendor/bin/phpunit --testsuite=Unit -c phpunit.xml"
+    ],
+    "test-integration": [
+      "@putenv XDEBUG_MODE=coverage",
+      "./vendor/bin/phpunit --testsuite=Integration -c phpunit.xml"
+    ],
+    "test-all": [
+      "@putenv XDEBUG_MODE=coverage",
+      "./vendor/bin/phpunit -c phpunit.xml"
+    ],
+    "test-standalone": [
+      "@putenv XDEBUG_MODE=coverage",
+      "./vendor/bin/phpunit -c phpunit.xml --exclude-group replicaset"
+    ],
+    "test:coverage": [
+      "@putenv XDEBUG_MODE=coverage",
+      "./vendor/bin/phpunit -c phpunit.xml --coverage-html=build/coverage",
+      "@php tools/assert-full-line-coverage.php build/coverage/clover.xml"
+    ],
+    "code-coverage": "@test:coverage",
+    "phpstan": "./vendor/bin/phpstan analyse -c phpstan.neon",
+    "lint": "./vendor/bin/php-cs-fixer check src tests --config=./php_cs.dist.php --diff",
+    "format": "./vendor/bin/php-cs-fixer fix src tests --config=./php_cs.dist.php",
+    "fix": "@format",
+    "quality": [
+      "@composer validate --strict --no-check-publish --no-check-lock",
+      "@lint",
+      "@phpstan",
+      "@test:coverage",
+      "@composer audit"
+    ]
+  },
+  "scripts-descriptions": {
+    "test": "Run the PHPUnit unit suite",
+    "test-integration": "Run the PHPUnit integration suite",
+    "test-all": "Run the complete PHPUnit suite",
+    "test:coverage": "Run the complete suite with line-coverage reporting (requires a reachable MongoDB instance, see docker-compose.yml)",
+    "code-coverage": "Alias for test:coverage",
+    "phpstan": "Run static analysis",
+    "lint": "Check PHP formatting without modifying files",
+    "format": "Apply PHP formatting fixes",
+    "fix": "Alias for format",
+    "quality": "Run every mandatory package quality gate"
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
